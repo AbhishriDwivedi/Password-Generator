@@ -1,3 +1,4 @@
+// getting value from doms
 const inputSlider = document.querySelector("[data-lengthSlider]");
 const lengthDisplay = document.querySelector("[data-lengthNumber]");
 const passwordDisplay = document.querySelector("[data-passwordDisplay]");
@@ -12,9 +13,12 @@ const generateBtn = document.querySelector(".generateButton");
 const allCheckBox = document.querySelectorAll("input[type=checkbox]");
 const symbols = '~`!@#$%^&*()_-+={[}]|:;"<,>.?/';
 
+// initializing the values
 let password = "";
 let passwordLength = 10;
 let checkCount = 0;
+
+// handle the slider movement
 handleSlider();
 
 // setting password length
@@ -23,31 +27,38 @@ function handleSlider(){
     lengthDisplay.innerText = passwordLength;
 }
 
+// setting indicator color
 function setIndicator(color){
     indicator.style.backgroundColor = color;
 }
 
+// get any random integer between min and max
 function getRndInteger(min, max){
    return Math.floor(Math.random()*(max-min)) + min;
 }
 
+// get any random integer
 function generateRandomInteger(){
     return getRndInteger(0,9);
 }
 
+// get any random lower case character
 function generateLowerCase(){
     return String.fromCharCode(getRndInteger(97,123));
 }
 
+// get any random upper case character
 function generateUpperCase(){
     return String.fromCharCode(getRndInteger(65,91));
 }
 
+// get any random symbol character
 function generateSymbol(){
     const rndNum = getRndInteger(0, symbols.length);
     return symbols.charAt(rndNum);
 }
 
+// function to calculate strength of generated password
 function calcStrength() {
     let hasUpper = false;
     let hasLower = false;
@@ -71,6 +82,7 @@ function calcStrength() {
     }
 }
 
+// on clicking copy button
 async function copyContent(){
     try{
         // api
@@ -89,6 +101,7 @@ async function copyContent(){
     }, 2000);
 }
 
+// on checking unchecking dialog box
 function handleCheckBoxChange(){
     checkCount = 0;
     allCheckBox.forEach((checkbox) => {
@@ -103,6 +116,7 @@ function handleCheckBoxChange(){
     }
 }
 
+// shuffle the characters of password
 function shufflePassword(array) {
     //Fisher Yates Method
     for (let i = array.length - 1; i > 0; i--) {
@@ -144,6 +158,7 @@ generateBtn.addEventListener('click', ()=>{
     // remove old pswd
     password="";
 
+    // this array will call functions
     let funcArr = [];
 
     if(uppercaseCheck.checked)
