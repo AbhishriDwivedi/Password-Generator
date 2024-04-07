@@ -25,6 +25,9 @@ handleSlider();
 function handleSlider(){
     inputSlider.value = passwordLength;
     lengthDisplay.innerText = passwordLength;
+    const min = inputSlider.min;
+    const max = inputSlider.max;
+    inputSlider.style.backgroundSize = ((passwordLength - min)*100/(max-min)) + "% 100%";
 }
 
 // setting indicator color
@@ -86,7 +89,7 @@ function calcStrength() {
 async function copyContent(){
     try{
         // api
-        await navigator.clipboard.writeText(passwordDisplay.Value);
+        await navigator.clipboard.writeText(passwordDisplay.value);
         copyMsg.innerText = "copied";
     }
     catch(e){
