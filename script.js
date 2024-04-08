@@ -1,4 +1,4 @@
-// getting value from doms
+// getting value from dom using custom attributes
 const inputSlider = document.querySelector("[data-lengthSlider]");
 const lengthDisplay = document.querySelector("[data-lengthNumber]");
 const passwordDisplay = document.querySelector("[data-passwordDisplay]");
@@ -10,11 +10,13 @@ const numbersCheck = document.querySelector("#numbers");
 const symbolsCheck = document.querySelector("#symbols");
 const indicator = document.querySelector("[data-indicator]");
 const generateBtn = document.querySelector(".generateButton");
+// all elements with tag 'input' and type 'checkbox'
 const allCheckBox = document.querySelectorAll("input[type=checkbox]");
 const symbols = '~`!@#$%^&*()_-+={[}]|:;"<,>.?/';
 
 // initializing the values
 let password = "";
+// default set to 10
 let passwordLength = 10;
 let checkCount = 0;
 
@@ -23,15 +25,21 @@ handleSlider();
 
 // setting password length
 function handleSlider(){
+    // setting the slider to 10 while loading
     inputSlider.value = passwordLength;
+    // displaying 10
     lengthDisplay.innerText = passwordLength;
+    // find minimum of input slider
     const min = inputSlider.min;
+    // find maximum of input slider
     const max = inputSlider.max;
+    // length of background color of slider indicating the length of the slider
     inputSlider.style.backgroundSize = ((passwordLength - min)*100/(max-min)) + "% 100%";
 }
 
 // setting indicator color
 function setIndicator(color){
+    // setting color of the password strength indicator
     indicator.style.backgroundColor = color;
 }
 
@@ -88,17 +96,20 @@ function calcStrength() {
 // on clicking copy button
 async function copyContent(){
     try{
-        // api
+        // api usage for copying to clipboard
         await navigator.clipboard.writeText(passwordDisplay.value);
+        // display a copied tooltip if successfully copied
         copyMsg.innerText = "copied";
     }
     catch(e){
+        // display a failed tooltip if not copied successfully
         copyMsg.innerText = "Failed";
     }
 
     // to make copy span visible
     copyMsg.classList.add("active");
 
+    // remove the displayed tooltip after 2 seconds.
     setTimeout(()=>{
         copyMsg.classList.remove("active");
     }, 2000);
@@ -107,14 +118,18 @@ async function copyContent(){
 // on checking unchecking dialog box
 function handleCheckBoxChange(){
     checkCount = 0;
+    // find the number of boxes checked
     allCheckBox.forEach((checkbox) => {
         if(checkbox.checked){
             checkCount++;
         }
     });
 
+    // if boxes checked are greated than password length
     if(checkCount > passwordLength){
+        // set the password length to the count of boxes checked
         passwordLength = checkCount;
+        // update the slider since we just altered the password length
         handleSlider();
     }
 }
@@ -131,29 +146,37 @@ function shufflePassword(array) {
         array[j] = temp;
       }
     let str = "";
+    // convert array to string
     array.forEach((el) => (str += el));
     return str;
 }
 
 allCheckBox.forEach((checkbox)=>{
+    // call function as soon as event of clicking is raised on checkbox
     checkbox.addEventListener('change', handleCheckBoxChange );
 })
 
+// this event is raised when the slider is moved
 inputSlider.addEventListener('input', (e)=>{
     passwordLength = e.target.value;
     handleSlider();
 })
 
+// event will be raised when copy button is clicked
 copyBtn.addEventListener('click', () => {
     if(passwordDisplay.value)
         copyContent();
 })
 
+// event raised when generate button is clicked
 generateBtn.addEventListener('click', ()=>{
 
+    // return if no box is checked
     if(checkCount <= 0) return;
 
+    // if boxes checked are greated than password length
     if(passwordLength < checkCount){
+        // set the password length to the count of boxes checked
         passwordLength = checkCount;
         handleSlider();
     }
@@ -164,35 +187,48 @@ generateBtn.addEventListener('click', ()=>{
     // this array will call functions
     let funcArr = [];
 
+    // push functions for generating characters of all types
+    // if box for upper case is checked
     if(uppercaseCheck.checked)
+        // push function for generating uppercase characters
         funcArr.push(generateUpperCase);
 
+    // if box for lower case is checked    
     if(lowercaseCheck.checked)
+        // push function for generating lowercase characters
         funcArr.push(generateLowerCase);
 
+    // if box for numbers is checked    
     if(numbersCheck.checked)
+        // push functions for generating random integer
         funcArr.push(generateRandomInteger);
 
+    // if box for symbols is checked
     if(symbolsCheck.checked)
+        // push function for generating symbol
         funcArr.push(generateSymbol);
 
     // compulsory addition
     for(let i=0; i<funcArr.length; i++){
+        // add one from each type
         password+=funcArr[i]();
     }
 
-    //remaining addition
+    // add characters randomly for the remaining length
     for(let i=0; i<passwordLength - funcArr.length; i++){
+        // find any random index
         let randIndex = getRndInteger(0, funcArr.length);
+        // find generator function at that index at add the obtained character
         password += funcArr[randIndex]();
     }
 
     // shuffle password
     password = shufflePassword(Array.from(password));
 
+    // display the password
     passwordDisplay.value = password;
 
-    //calculate strength
+    //calculate strength of the password
     calcStrength();
 })
 
